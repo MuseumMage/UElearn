@@ -19,12 +19,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Active status
+	bool bIsActive;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Get mesh component
 	FORCEINLINE class UStaticMeshComponent* GetMesh() const { return PickupMesh; };
+
+	// Get the state
+	UFUNCTION(BlueprintPure, Category = "Pickup")
+	bool IsActive();
+
+	// Set the state
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
+	void SetActive(bool NewPickupState);
 
 private:
 	// static mesh component
