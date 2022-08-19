@@ -37,3 +37,14 @@ FVector ASpawnVolume::GetRandomPointInVolume()
 	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnOrigin, SpawnExtent);
 }
 
+void ASpawnVolume::SpawnPickup()
+{
+	// If we have set something to spawn
+
+	// Check for a valid world
+
+	// Set the spawn parameter
+
+	// Spawn the pickup
+}
+

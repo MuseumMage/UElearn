@@ -30,8 +30,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spawning")
 	FVector GetRandomPointInVolume();
 
+protected:
+	// The pickup to spawn
+	// TSubclassOf means we are able to enforce only APickup or any child class, like BatteryBlueprint or PickupBlueprint,
+	// can be set on the WhatToSpawn variable
+	PROPERTY(EditAnywhere, Category = "Spawning")
+	TSubclassOf<class APickup> WhatToSpawn;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* WhereToSpawn;
+
+	// handle Spawning the new pickup
+	void SpawnPickup();
 };
