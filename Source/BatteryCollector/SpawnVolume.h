@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Pickup.h"
 #include "SpawnVolume.generated.h"
 
 UCLASS()
@@ -34,7 +35,7 @@ protected:
 	// The pickup to spawn
 	// TSubclassOf means we are able to enforce only APickup or any child class, like BatteryBlueprint or PickupBlueprint,
 	// can be set on the WhatToSpawn variable
-	PROPERTY(EditAnywhere, Category = "Spawning")
+	UPROPERTY(EditAnywhere, Category = "Spawning")
 	TSubclassOf<class APickup> WhatToSpawn;
 
 
