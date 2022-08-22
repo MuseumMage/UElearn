@@ -9,3 +9,11 @@ ABatteryPickup::ABatteryPickup()
 	// stuff falls from sky
 	GetMesh()->SetSimulatePhysics(true);
 }
+
+void ABatteryPickup::WasCollected_Implementation()
+{
+	// use the base pickup behavior
+	Super::WasCollected_Implementation();
+	// Destroy the battery
+	Destroy();
+}
