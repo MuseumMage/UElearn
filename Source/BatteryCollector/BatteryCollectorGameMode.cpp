@@ -12,4 +12,7 @@ ABatteryCollectorGameMode::ABatteryCollectorGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	// Base decay rate
+
 }

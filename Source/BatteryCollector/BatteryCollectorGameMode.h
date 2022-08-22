@@ -13,6 +13,12 @@ class ABatteryCollectorGameMode : public AGameModeBase
 
 public:
 	ABatteryCollectorGameMode();
+
+protected:
+	// GameMode sets the rules of the game. Different mode has a different value.
+	// EditDefaultsOnly means you cannot change a property on every instance of the class, just on the base class itself.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power")
+	float DecayRate;
 };
 
 
