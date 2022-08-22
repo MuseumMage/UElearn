@@ -34,6 +34,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	// Accessor function for intial power. BlueprintPure means you do not want to excute it but just return the value.
+	UFUNCTION(BlueprintPure, Category = "Power")
+	float GetInitialPower();
+
+	// Accessor function for current power
+	UFUNCTION(BlueprintPure, Category = "Power")
+	float GetCurrentPower();
+
+	/**
+	Function to update the character's power. BlueprintCallable means you want to excute it.
+	* @param PowerChange This is the amount to change the power by, and it can be positive or negative.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Power")
+	void UpdatePower(float PowerChange);
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -71,6 +86,15 @@ protected:
 	// Called when we press a key to collect pickups inside the sphere
 	UFUNCTION(BlueprintCallable, Category = "Pickups")
 	void CollectPickups();
+
+	// Setup initial power
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power")
+	float InitialPower;
+
+private:
+	// Current power level
+	UPROPERTY(VisibleAnywhere, Category = "Power")
+	float CurrentPower;
 
 public:
 	/** Returns CameraBoom subobject **/

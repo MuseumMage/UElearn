@@ -8,6 +8,9 @@ ABatteryPickup::ABatteryPickup()
 {
 	// stuff falls from sky
 	GetMesh()->SetSimulatePhysics(true);
+
+	// Set the base power
+	BatteryPower = 150.f;
 }
 
 void ABatteryPickup::WasCollected_Implementation()
@@ -16,4 +19,9 @@ void ABatteryPickup::WasCollected_Implementation()
 	Super::WasCollected_Implementation();
 	// Destroy the battery
 	Destroy();
+}
+
+float ABatteryPickup::GetPower()
+{
+	return BatteryPower;
 }

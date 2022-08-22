@@ -20,4 +20,12 @@ public:
 
 	// Override the WasCollected function - use Implementation because its a Blueprint native event
 	void WasCollected_Implementation() override;
+
+	// UFUNTION is set to be 
+	float GetPower();
+
+protected:
+	// Set the amount of power in this charactor. Only blueprints that can change this variable are those that inherit from BatteryPickup
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", meta = (BlueprintProtected = "true"))
+	float BatteryPower;
 };
