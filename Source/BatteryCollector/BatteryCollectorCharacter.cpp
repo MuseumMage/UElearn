@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Pickup.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ABatteryCollectorCharacter
@@ -61,6 +62,9 @@ void ABatteryCollectorCharacter::SetupPlayerInputComponent(class UInputComponent
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	// Bind the action to collection pickup
+	PlayerInputComponent->BindAction("Collect", IE_Released, this, &ABatteryCollectorCharacter::CollectPickups);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABatteryCollectorCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABatteryCollectorCharacter::MoveRight);
@@ -141,5 +145,25 @@ void ABatteryCollectorCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void ABatteryCollectorCharacter::CollectPickups()
+{
+	// Get all overlapping Actors
+	TArray<AActor*> CollectedActors;
+	CollectionSphere->GetOverlappingActors(CollectedActors);
+	// For each Actor, cast the actor to pickup
+	for (int i = 0; i < CollectedActors.Num(); i++)
+	{
+		APickup* const TestPickup = Cast<APickup>(CollectedActors[i]);
+		// Check the pickup validation
+		if (TestPickup != nullptr && !TestPickup->IsPendingKill() && TestPickup->IsActive())
+		{
+			// WasCollected not WasCollected_Implementation because this is just code implementation. 
+			// We want to capture any Blueprint script and set up any code that is defined.
+			TestPickup->WasCollected();
+			TestPickup->SetActive(false);
+		}
 	}
 }
