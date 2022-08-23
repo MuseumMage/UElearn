@@ -9,6 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Pickup.h"
+#include "BatteryPickup.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ABatteryCollectorCharacter
@@ -157,6 +158,10 @@ void ABatteryCollectorCharacter::CollectPickups()
 	// Get all overlapping Actors
 	TArray<AActor*> CollectedActors;
 	CollectionSphere->GetOverlappingActors(CollectedActors);
+
+	// Keep track of battery power
+	float CollectedPower = 0;
+
 	// For each Actor, cast the actor to pickup
 	for (int i = 0; i < CollectedActors.Num(); i++)
 	{
@@ -167,8 +172,18 @@ void ABatteryCollectorCharacter::CollectPickups()
 			// WasCollected not WasCollected_Implementation because this is just code implementation. 
 			// We want to capture any Blueprint script and set up any code that is defined.
 			TestPickup->WasCollected();
+			ABatteryPickup* const TestBatteryPickup = Cast<ABatteryPickup>(TestPickup);
+			if (TestBatteryPickup != nullptr)
+			{
+				// Increate the collected power
+				CollectedPower += TestBatteryPickup->GetPower();
+			}
 			TestPickup->SetActive(false);
 		}
+	}
+	if (CollectedPower > 0)
+	{
+		UpdatePower(CollectedPower);
 	}
 }
 
