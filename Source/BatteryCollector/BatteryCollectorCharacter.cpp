@@ -207,6 +207,6 @@ void ABatteryCollectorCharacter::UpdatePower(float PowerChange)
 	CurrentPower += PowerChange;
 	// Change speed based on power
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed + SpeedFactor* CurrentPower;
-	// Call visual effect
+	// Call visual effect by Blueprints implementation
 	PowerChangeEffect();
 }
