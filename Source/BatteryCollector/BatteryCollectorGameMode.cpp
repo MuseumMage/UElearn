@@ -33,6 +33,7 @@ float ABatteryCollectorGameMode::GetPowerToWin() const
 void ABatteryCollectorGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	SetCurrentState(EBatteryPlayState::EPlaying);
 
 	// Set the score to beat
 	ABatteryCollectorCharacter* MyCharacter = Cast<ABatteryCollectorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)); // Get the character
@@ -51,6 +52,16 @@ void ABatteryCollectorGameMode::BeginPlay()
 	}
 }
 
+EBatteryPlayState ABatteryCollectorGameMode::GetCurrentState() const
+{
+	return CurrentState;
+}
+
+void ABatteryCollectorGameMode::SetCurrentState(EBatteryPlayState NewState)
+{
+	CurrentState = NewState;
+}
+
 void ABatteryCollectorGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -59,10 +70,18 @@ void ABatteryCollectorGameMode::Tick(float DeltaTime)
 	ABatteryCollectorCharacter* MyCharacter = Cast<ABatteryCollectorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)); // Get the character
 	if (MyCharacter != nullptr)
 	{
-		if (MyCharacter->GetCurrentPower() > 0)
+		if (MyCharacter->GetCurrentPower() > PowerToWin)
+		{
+			SetCurrentState(EBatteryPlayState::EWon);
+		}
+		else if (MyCharacter->GetCurrentPower() > 0)
 		{
 			// Decrease the character power using the decay rate
 			MyCharacter->UpdatePower(-DeltaTime * DecayRate * (MyCharacter->GetInitialPower()));
+		}
+		else 
+		{
+			SetCurrentState(EBatteryPlayState::EGameOver);
 		}
 	}
 }
