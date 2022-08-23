@@ -60,6 +60,8 @@ protected:
 private:
 	// Current playing state
 	EBatteryPlayState CurrentState;
+
+	TArray<class ASpawnVolume*> SpawnVolumeActors;
 };
 
 

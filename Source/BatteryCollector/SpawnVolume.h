@@ -31,6 +31,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spawning")
 	FVector GetRandomPointInVolume();
 
+	// Toggles whether or not the spawn volume spawns pickups
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void SetSpawningActive(bool bShouldSpawn);
+
 protected:
 	// The pickup to spawn
 	// TSubclassOf means we are able to enforce only APickup or any child class, like BatteryBlueprint or PickupBlueprint,
