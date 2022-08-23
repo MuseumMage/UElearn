@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "SpawnVolume.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 ABatteryCollectorGameMode::ABatteryCollectorGameMode()
 {
@@ -34,6 +36,20 @@ float ABatteryCollectorGameMode::GetPowerToWin() const
 void ABatteryCollectorGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Find all spawn volume actors
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnVolume::StaticClass(), FoundActors);
+
+	for (auto Actor : FoundActors)
+	{
+		ASpawnVolume* SpawnVolumeActor = Cast<ASpawnVolume>(Actor);
+		if (SpawnVolumeActor != nullptr)
+		{
+			SpawnVolumeActors.AddUnique(SpawnVolumeActor);
+		}
+	}
+
 	SetCurrentState(EBatteryPlayState::EPlaying);
 
 	// Set the score to beat
@@ -51,19 +67,6 @@ void ABatteryCollectorGameMode::BeginPlay()
 			CurrentWidget->AddToViewport();
 		}
 	}
-
-	// Find all spawn volume actors
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnVolume::StaticClass(), FoundActors);
-
-	for (auto Actor : FoundActors)
-	{
-		ASpawnVolume* SpawnVolumeActor = Cast<ASpawnVolume>(Actor);
-		if (SpawnVolumeActor != nullptr)
-		{
-			SpawnVolumeActors.AddUnique(SpawnVolumeActor);
-		}
-	}
 }
 
 EBatteryPlayState ABatteryCollectorGameMode::GetCurrentState() const
@@ -74,6 +77,63 @@ EBatteryPlayState ABatteryCollectorGameMode::GetCurrentState() const
 void ABatteryCollectorGameMode::SetCurrentState(EBatteryPlayState NewState)
 {
 	CurrentState = NewState;
+	// Call the action
+	HandleNewState(NewState);
+}
+
+// Handle state and call the action
+void ABatteryCollectorGameMode::HandleNewState(EBatteryPlayState NewState)
+{
+	switch (NewState)
+	{
+		case EBatteryPlayState::EPlaying:
+		{
+			// Spawn volumes active
+			for (ASpawnVolume* Volume : SpawnVolumeActors)
+			{
+				Volume->SetSpawningActive(true);
+			}
+		}
+		break;
+		case EBatteryPlayState::EWon:
+		{
+			// Spawn volumes inactive
+			for (ASpawnVolume* Volume : SpawnVolumeActors)
+			{
+				Volume->SetSpawningActive(false);
+			}
+		}
+		break;
+		case EBatteryPlayState::EGameOver:
+		{
+			// Spawn volumes inactive
+			for (ASpawnVolume* Volume : SpawnVolumeActors)
+			{
+				Volume->SetSpawningActive(false);
+			}
+			// Block player input
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+			if (PlayerController != nullptr)
+			{
+				// Disable the input
+				PlayerController->SetCinematicMode(true, false, false, true, true);
+			}
+			// Ragdoll the character
+			ACharacter* MyCharacter = Cast<ACharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+			if (MyCharacter != nullptr)
+			{
+				// Collapes the character
+				MyCharacter->GetMesh()->SetSimulatePhysics(true);
+				MyCharacter->GetMovementComponent()->MovementState.bCanJump = false;
+			}
+		}
+		break;
+		case EBatteryPlayState::EUnknown:
+		{
+
+		}
+		break;
+	}
 }
 
 void ABatteryCollectorGameMode::Tick(float DeltaTime)

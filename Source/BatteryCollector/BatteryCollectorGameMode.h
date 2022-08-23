@@ -61,7 +61,11 @@ private:
 	// Current playing state
 	EBatteryPlayState CurrentState;
 
+	// Store all the Spawn Volumes in the world
 	TArray<class ASpawnVolume*> SpawnVolumeActors;
+
+	// Handle any function calls that rely upon changing the playing state of our game
+	void HandleNewState(EBatteryPlayState NewState);
 };
 
 
