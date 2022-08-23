@@ -3,6 +3,7 @@
 #include "BatteryCollectorGameMode.h"
 #include "BatteryCollectorCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 ABatteryCollectorGameMode::ABatteryCollectorGameMode()
 {
@@ -13,6 +14,27 @@ ABatteryCollectorGameMode::ABatteryCollectorGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	// Base decay rate
+	// Note: 
+	// If your gamemode class inherits from AGameModeBase instead of AGameMode(for example if you created project in the newest UE(4.14.0)) you have to set
+	// PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
+	// Base decay rate
+	DecayRate = 0.01f;
+}
+
+void ABatteryCollectorGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// Check that we are using the battery collector character
+	ABatteryCollectorCharacter* MyCharacter = Cast<ABatteryCollectorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)); // Get the character
+	if (MyCharacter != nullptr)
+	{
+		if (MyCharacter->GetCurrentPower() > 0)
+		{
+			// Decrease the character power using the decay rate
+			MyCharacter->UpdatePower(-DeltaTime * DecayRate * (MyCharacter->GetInitialPower()));
+		}
+	}
 }
