@@ -88,8 +88,22 @@ protected:
 	void CollectPickups();
 
 	// Setup initial power
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power")
+	// BlueprintProtected means other blueprints cannot reach in and change the values
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", meta = (BlueprintProtected = "true"))
 	float InitialPower;
+
+	// Multiplier for character speed
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", meta = (BlueprintProtected = "true"))
+	float SpeedFactor;
+
+	// Speed when power level = 0
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", meta = (BlueprintProtected = "true"))
+	float BaseSpeed;
+
+	// BlueprintImplementableEvent means we do not have to define the function in code at all. 
+	// We call the function and let the Blueprints worry about the behavior that is going to be attached to that event.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Power")
+	void PowerChangeEffect();
 
 private:
 	// Current power level

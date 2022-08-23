@@ -17,10 +17,11 @@ ABatteryCollectorGameMode::ABatteryCollectorGameMode()
 	// Note: 
 	// If your gamemode class inherits from AGameModeBase instead of AGameMode(for example if you created project in the newest UE(4.14.0)) you have to set
 	// PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Base decay rate
-	DecayRate = 0.01f;
+	DecayRate = 0.05f;
 }
 
 void ABatteryCollectorGameMode::Tick(float DeltaTime)
